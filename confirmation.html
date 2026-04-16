@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization Confirmed - Demo Only</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="demo-banner">DEMO ONLY - NOT A REAL TRANSFER SERVICE</div>
+
+    <main class="container">
+        <section class="confirmation-section">
+            <div class="card success-card">
+                <div class="success-icon">✓</div>
+                <h1>Authorization Confirmed!</h1>
+                <p>Your demo transfer authorization has been successfully submitted for processing.</p>
+                <div class="demo-badge">Demo Only</div>
+                <div class="details-box" id="summaryDetails">
+                    <!-- JavaScript will populate this -->
+                </div>
+                <div class="form-actions">
+                    <a href="index.html" class="button secondary">Return Home</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="container">
+        <p>&copy; 2026 Transfer Demo (Demo Only). All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Inline script to display submitted data for demo purposes
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const summaryBox = document.getElementById('summaryDetails');
+            
+            if (params.has('name')) {
+                summaryBox.innerHTML = `
+                    <p><strong>Name:</strong> ${params.get('name')}</p>
+                    <p><strong>Amount:</strong> $${params.get('amount')}</p>
+                    <p><strong>Recipient:</strong> ${params.get('recipient')}</p>
+                    <p><strong>Reason:</strong> ${params.get('reason')}</p>
+                    <p class="demo-note">Note: This is a demo simulation. No actual funds were moved.</p>
+                `;
+            } else {
+                summaryBox.innerHTML = '<p class="demo-note">No transfer data found. This is a demo only.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
