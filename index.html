@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AccountFlow - Fintech Portal</title>
+    <title>AccountFlow Brief</title>
     <!-- React and ReactDOM from CDN -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -21,13 +21,12 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#0F172A',
+                        background: '#0F172A',
                         card: '#111827',
                         border: '#1F2937',
+                        textPrimary: '#E5E7EB',
+                        textSecondary: '#9CA3AF',
                         accent: '#4F46E5',
-                        secondary: '#06B6D4',
-                        success: '#10B981',
-                        warning: '#F59E0B',
                     }
                 }
             }
@@ -35,349 +34,160 @@
     </script>
     <style>
         body { background-color: #0F172A; color: #E5E7EB; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 10px; }
-        .active-link { background-color: rgba(79, 70, 229, 0.1); border-left: 4px solid #4F46E5; color: #4F46E5; }
-        .page-transition { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .document-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3); }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState } = React;
 
-        // --- GLOBAL COMPONENTS ---
-
-        const GlobalNotice = () => (
-            <div className="bg-indigo-600 text-white text-[10px] md:text-xs font-bold py-1 px-4 text-center sticky top-0 z-[100] tracking-widest uppercase">
-                ⚠️ Informational platform only. No real banking transactions are processed.
-            </div>
-        );
-
-        const Navbar = ({ onMenuClick, currentPage, navigate }) => (
-            <nav className="h-16 bg-card/80 backdrop-blur-md border-b border-border flex items-center justify-between px-4 md:px-8 sticky top-[24px] z-50">
-                <div className="flex items-center gap-4">
-                    <button onClick={onMenuClick} className="md:hidden text-gray-400 p-1">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                    </button>
-                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('dashboard')}>
-                        <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center font-bold text-white">A</div>
-                        <span className="text-xl font-bold tracking-tight text-white">AccountFlow</span>
-                    </div>
-                </div>
-                
-                <div className="hidden md:flex items-center gap-8">
-                    {['dashboard', 'account-guide', 'transfer-status', 'support'].map(p => (
-                        <button 
-                            key={p} 
-                            onClick={() => navigate(p)}
-                            className={`text-sm font-medium transition-colors ${currentPage === p ? 'text-indigo-400' : 'text-gray-400 hover:text-gray-200'}`}
-                        >
-                            {p.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                        </button>
-                    ))}
-                </div>
-
-                <div className="flex items-center gap-4">
-                    <div className="w-9 h-9 bg-gray-800 rounded-full border border-border flex items-center justify-center text-xs font-bold text-gray-400 cursor-pointer hover:border-gray-600 transition-all">
-                        JD
-                    </div>
-                </div>
-            </nav>
-        );
-
-        const Sidebar = ({ isOpen, onClose, currentPage, navigate }) => {
-            const links = [
-                { id: 'dashboard', label: 'Dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
-                { id: 'account-guide', label: 'Account Guide', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
-                { id: 'transfer-status', label: 'Transfer Status', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4' },
-                { id: 'timeline', label: 'Timeline', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
-                { id: 'support', label: 'Support', icon: 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z' },
-                { id: 'faq', label: 'FAQ', icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
-            ];
-
-            return (
-                <>
-                    {/* Overlay */}
-                    {isOpen && <div className="fixed inset-0 bg-black/60 z-50 md:hidden" onClick={onClose} />}
-                    
-                    <aside className={`fixed md:sticky top-16 md:top-24 h-[calc(100vh-64px)] md:h-[calc(100vh-96px)] w-64 bg-card border-r border-border z-[60] transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-                        <div className="py-6 flex flex-col h-full">
-                            <div className="flex-1 space-y-1 px-3">
-                                {links.map(link => (
-                                    <button
-                                        key={link.id}
-                                        onClick={() => { navigate(link.id); onClose(); }}
-                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${currentPage === link.id ? 'active-link' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'}`}
-                                    >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={link.icon} /></svg>
-                                        {link.label}
-                                    </button>
-                                ))}
-                            </div>
-                            
-                            <div className="px-6 py-6 border-t border-border">
-                                <div className="bg-indigo-900/20 rounded-xl p-4 border border-indigo-500/10">
-                                    <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-wider mb-2">Platform Status</p>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                                        <span className="text-xs text-gray-300">Live Simulation</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
-                </>
-            );
-        };
-
-        const Card = ({ title, children, className = "" }) => (
-            <div className={`bg-card border border-border rounded-2xl p-6 shadow-xl transition-all hover:border-border/60 ${className}`}>
-                {title && <h3 className="text-gray-100 text-base font-bold mb-5 tracking-tight">{title}</h3>}
+        const SectionCard = ({ title, children, className = "" }) => (
+            <div className={`bg-card border border-border rounded-2xl p-6 md:p-8 mb-6 ${className}`}>
+                {title && <h2 className="text-accent text-sm font-bold uppercase tracking-wider mb-6">{title}</h2>}
                 {children}
             </div>
         );
 
-        const StatusBadge = ({ type, children }) => {
-            const styles = {
-                pending: "bg-warning/10 text-warning border-warning/20",
-                success: "bg-success/10 text-success border-success/20",
-                indigo: "bg-accent/10 text-indigo-400 border-accent/20"
-            };
-            return (
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${styles[type] || styles.pending}`}>
-                    {children.toUpperCase()}
-                </span>
-            );
-        };
+        const InfoRow = ({ label, value, highlight = false }) => (
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center py-3 border-b border-border/50 last:border-0">
+                <span className="text-textSecondary text-sm mb-1 md:mb-0">{label}</span>
+                <span className={`text-sm font-semibold ${highlight ? 'text-indigo-400' : 'text-textPrimary'}`}>{value}</span>
+            </div>
+        );
 
-        // --- PAGES ---
-
-        const Dashboard = ({ navigate }) => (
-            <div className="page-transition space-y-8">
-                <header>
-                    <h2 className="text-2xl font-bold text-gray-100">Overview Dashboard</h2>
-                    <p className="text-gray-400 text-sm">Real-time tracking of your account opening progress.</p>
-                </header>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <Card title="Account Overview">
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                <span className="text-gray-500 text-xs font-bold uppercase">Bank Institution</span>
-                                <span className="text-gray-200 text-sm font-semibold">Deutsche Kreditbank AG</span>
-                            </div>
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                <span className="text-gray-500 text-xs font-bold uppercase">Account Status</span>
-                                <StatusBadge type="pending">Pending Activation</StatusBadge>
-                            </div>
-                            <div className="flex justify-between items-center py-2">
-                                <span className="text-gray-500 text-xs font-bold uppercase">Est. Activation</span>
-                                <span className="text-gray-200 text-sm font-semibold">24–72 Hours</span>
-                            </div>
-                        </div>
-                    </Card>
-
-                    <Card title="Transfer Summary">
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                <span className="text-gray-500 text-xs font-bold uppercase">Amount</span>
-                                <span className="text-cyan-400 text-lg font-bold">$270,000</span>
-                            </div>
-                            <div className="flex justify-between items-center py-2 border-b border-border/50">
-                                <span className="text-gray-500 text-xs font-bold uppercase">Recipient</span>
-                                <span className="text-gray-200 text-sm font-semibold">Sandra Brunner</span>
-                            </div>
-                            <div className="flex justify-between items-center py-2">
-                                <span className="text-gray-500 text-xs font-bold uppercase">Status</span>
-                                <span className="text-indigo-400 text-xs font-bold flex items-center gap-2">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                                    Awaiting Activation
-                                </span>
-                            </div>
-                        </div>
-                    </Card>
-                </div>
-
-                <Card title="Recent Activity">
-                    <div className="space-y-6">
-                        {[
-                            { date: 'Today, 10:45 AM', event: 'Account verification documents under final review.', type: 'indigo' },
-                            { date: 'Yesterday, 02:15 PM', event: 'Beneficiary account successfully created in system.', type: 'success' },
-                            { date: '2 days ago', event: 'Initial application submitted for processing.', type: 'success' }
-                        ].map((log, i) => (
-                            <div key={i} className="flex gap-4">
-                                <div className="flex flex-col items-center">
-                                    <div className={`w-2.5 h-2.5 rounded-full bg-${log.type === 'success' ? 'success' : 'indigo-500'} mt-1.5`} />
-                                    {i < 2 && <div className="w-[1px] h-full bg-border mt-2" />}
-                                </div>
-                                <div className="pb-4">
-                                    <p className="text-xs font-bold text-gray-500 mb-1">{log.date}</p>
-                                    <p className="text-sm text-gray-300 font-medium">{log.event}</p>
-                                </div>
-                            </div>
-                        ))}
+        const TimelineStep = ({ step, title, desc, isLast = false }) => (
+            <div className="flex gap-4">
+                <div className="flex flex-col items-center">
+                    <div className="w-8 h-8 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent bg-background">
+                        {step}
                     </div>
-                </Card>
-
-                <div className="bg-indigo-900/20 border border-indigo-500/20 rounded-2xl p-6">
-                    <p className="text-indigo-200 text-xs font-medium leading-relaxed">
-                        <span className="font-bold mr-2">NOTICE:</span>
-                        All timelines shown are estimates and for informational purposes only. Processing speeds depend on institutional verification standards.
-                    </p>
+                    {!isLast && <div className="w-[2px] h-full bg-border my-1" />}
+                </div>
+                <div className="pb-8">
+                    <h3 className="text-textPrimary text-sm font-bold mb-1">{title}</h3>
+                    <p className="text-textSecondary text-xs leading-relaxed">{desc}</p>
                 </div>
             </div>
         );
 
-        const AccountGuide = () => (
-            <div className="page-transition space-y-8">
-                <header>
-                    <h2 className="text-2xl font-bold text-gray-100">Setup Guide</h2>
-                    <p className="text-gray-400 text-sm">Follow the structured steps for account activation.</p>
-                </header>
-
-                <div className="space-y-4">
-                    {[
-                        { step: 1, title: 'Application Submission', time: 'Day 1', status: 'Completed', desc: 'Initial submission of client instruction and transfer intent.' },
-                        { step: 2, title: 'Document Review', time: 'Day 1-2', status: 'Completed', desc: 'Verification of recipient details and compliance check.' },
-                        { step: 3, title: 'Account Creation', time: 'Day 3', status: 'Active', desc: 'Opening of the designated beneficiary account at the receiving bank.' },
-                        { step: 4, title: 'Final Activation', time: 'Day 4-5', status: 'Pending', desc: 'Account becomes fully active for incoming funds processing.' }
-                    ].map(s => (
-                        <Card key={s.step} className={s.status === 'Active' ? 'border-indigo-500/50 bg-indigo-900/5' : ''}>
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${s.status === 'Completed' ? 'bg-success/20 text-success' : s.status === 'Active' ? 'bg-indigo-600 text-white shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'bg-gray-800 text-gray-500'}`}>
-                                        {s.status === 'Completed' ? '✓' : s.step}
-                                    </div>
-                                    <div>
-                                        <h4 className="text-gray-100 font-bold tracking-tight">{s.title}</h4>
-                                        <p className="text-xs text-gray-500 font-medium">{s.time}</p>
-                                    </div>
-                                </div>
-                                <div className="flex-1 md:px-8">
-                                    <p className="text-xs text-gray-400 max-w-md">{s.desc}</p>
-                                </div>
-                                <div>
-                                    <StatusBadge type={s.status.toLowerCase()}>{s.status}</StatusBadge>
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
-            </div>
-        );
-
-        const Support = () => (
-            <div className="page-transition space-y-8">
-                <header>
-                    <h2 className="text-2xl font-bold text-gray-100">Help & Support</h2>
-                    <p className="text-gray-400 text-sm">Connect with the relationship management team.</p>
-                </header>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <Card title="Contact Details" className="lg:col-span-1">
-                        <div className="space-y-6">
-                            <div>
-                                <p className="text-xs font-bold text-gray-500 uppercase mb-2">Email Support</p>
-                                <p className="text-sm font-semibold text-indigo-400">support@accountflow.demo</p>
-                            </div>
-                            <div>
-                                <p className="text-xs font-bold text-gray-500 uppercase mb-2">Response Time</p>
-                                <p className="text-sm font-semibold text-gray-200">24–48 Hours</p>
-                            </div>
-                            <div>
-                                <p className="text-xs font-bold text-gray-500 uppercase mb-2">Operating Hours</p>
-                                <p className="text-sm font-semibold text-gray-200">Mon–Fri, 9AM–5PM CET</p>
-                            </div>
-                        </div>
-                    </Card>
-
-                    <Card title="Send a Message" className="lg:col-span-2">
-                        <form className="space-y-4" onSubmit={e => e.preventDefault()}>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-gray-500 uppercase">Your Name</label>
-                                    <input type="text" className="w-full bg-gray-900 border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500" placeholder="John Doe" />
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-gray-500 uppercase">Subject</label>
-                                    <input type="text" className="w-full bg-gray-900 border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500" placeholder="Account Delay" />
-                                </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-gray-500 uppercase">Message</label>
-                                <textarea rows="4" className="w-full bg-gray-900 border border-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500" placeholder="Describe your inquiry..."></textarea>
-                            </div>
-                            <button className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-3 px-8 rounded-xl transition-all">Submit Inquiry</button>
-                        </form>
-                    </Card>
-                </div>
-            </div>
-        );
-
-        const FAQ = () => (
-            <div className="page-transition space-y-8">
-                <header>
-                    <h2 className="text-2xl font-bold text-gray-100">Frequently Asked Questions</h2>
-                    <p className="text-gray-400 text-sm">Common inquiries regarding account and transfer timelines.</p>
-                </header>
-
-                <div className="space-y-4">
-                    {[
-                        { q: "How long does account activation take?", a: "Typically, activation is completed within 24 to 72 hours following the successful review of all internal documentation and compliance requirements." },
-                        { q: "When will funds be transferred?", a: "Transfer initiation occurs immediately after the receiving account is fully activated and verified in the banking system." },
-                        { q: "What causes delays in processing?", a: "Delays are usually the result of additional verification stages, institutional holidays, or specific transaction requirements that require extended review." },
-                        { q: "Is this a real banking portal?", a: "No. AccountFlow is a simulated informational platform designed to provide guidance and tracking for account opening scenarios. It does not process actual funds." }
-                    ].map((f, i) => (
-                        <Card key={i}>
-                            <h4 className="text-gray-100 font-bold text-sm mb-3 tracking-tight">{f.q}</h4>
-                            <p className="text-xs text-gray-400 leading-relaxed font-medium">{f.a}</p>
-                        </Card>
-                    ))}
-                </div>
-            </div>
-        );
-
-        // --- MAIN APP ---
-
-        const App = () => {
-            const [currentPage, setCurrentPage] = useState('dashboard');
-            const [sidebarOpen, setSidebarOpen] = useState(false);
-
-            const renderPage = () => {
-                switch(currentPage) {
-                    case 'dashboard': return <Dashboard navigate={setCurrentPage} />;
-                    case 'account-guide': return <AccountGuide />;
-                    case 'transfer-status': return <Dashboard navigate={setCurrentPage} />; // Reuse for demo
-                    case 'support': return <Support />;
-                    case 'faq': return <FAQ />;
-                    default: return <Dashboard navigate={setCurrentPage} />;
-                }
-            };
-
+        const AccountFlowBrief = () => {
             return (
-                <div className="min-h-screen flex flex-col font-sans">
-                    <GlobalNotice />
-                    <Navbar onMenuClick={() => setSidebarOpen(true)} currentPage={currentPage} navigate={setCurrentPage} />
-                    
-                    <div className="flex-1 container mx-auto flex gap-0 md:gap-8 px-0 md:px-8 py-0 md:py-8">
-                        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} currentPage={currentPage} navigate={setCurrentPage} />
-                        
-                        <main className="flex-1 px-6 py-8 md:p-0 custom-scrollbar overflow-y-auto">
-                            {renderPage()}
-                            
-                            <footer className="mt-16 py-8 border-t border-border/50 text-center">
-                                <p className="text-[10px] text-gray-600 font-bold tracking-widest uppercase">
-                                    © 2026 AccountFlow Portal • Informational Demo Scenario
+                <div className="max-w-[900px] mx-auto px-6 py-12 md:py-20 fade-in">
+                    {/* Header */}
+                    <header className="text-center mb-16">
+                        <h1 className="text-4xl md:text-5xl font-bold text-textPrimary tracking-tight mb-3">AccountFlow Brief</h1>
+                        <p className="text-textSecondary text-lg">Account Opening and Transfer Information</p>
+                        <div className="w-20 h-1 bg-accent mx-auto mt-8 rounded-full"></div>
+                    </header>
+
+                    {/* Source Section */}
+                    <SectionCard className="bg-accent/5 border-accent/20">
+                        <div className="flex items-start gap-4">
+                            <div className="p-2 bg-accent/10 rounded-lg text-accent">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 className="text-textPrimary text-base font-bold mb-2">Information Source</h2>
+                                <p className="text-textSecondary text-sm mb-4 leading-relaxed italic">
+                                    "This information has been provided by a banking relationship manager for briefing purposes."
                                 </p>
-                            </footer>
-                        </main>
+                                <div className="pt-4 border-t border-accent/10">
+                                    <p className="text-textSecondary text-xs uppercase font-bold tracking-widest mb-1">Source Name</p>
+                                    <p className="text-textPrimary text-lg font-medium">Mr. Peter Henkel</p>
+                                </div>
+                            </div>
+                        </div>
+                    </SectionCard>
+
+                    {/* Account Information */}
+                    <SectionCard title="Account Opening Details">
+                        <div className="space-y-1">
+                            <InfoRow label="Bank Name" value="Deutsche Kreditbank AG" />
+                            <InfoRow label="Account Type" value="Personal Account" />
+                            <InfoRow label="Status" value="Pending Activation" highlight />
+                            <div className="mt-6 pt-4 border-t border-border/30">
+                                <p className="text-textSecondary text-xs leading-relaxed flex items-start gap-2">
+                                    <span className="text-accent">•</span>
+                                    Account activation is subject to standard verification procedures.
+                                </p>
+                            </div>
+                        </div>
+                    </SectionCard>
+
+                    {/* Transfer Information */}
+                    <SectionCard title="Transfer Details">
+                        <div className="space-y-1">
+                            <InfoRow label="Amount" value="$270,000" highlight />
+                            <InfoRow label="Recipient" value="Sandra Brunner" />
+                            <InfoRow label="Status" value="Awaiting Account Activation" />
+                            <div className="mt-6 pt-4 border-t border-border/30">
+                                <p className="text-textSecondary text-xs leading-relaxed flex items-start gap-2">
+                                    <span className="text-accent">•</span>
+                                    The transfer is expected to proceed following successful account activation.
+                                </p>
+                            </div>
+                        </div>
+                    </SectionCard>
+
+                    {/* Process Timeline */}
+                    <SectionCard title="Process Timeline">
+                        <div className="mt-4">
+                            <TimelineStep 
+                                step="1" 
+                                title="Application Submitted" 
+                                desc="Initial instruction for account opening and transfer intent has been logged." 
+                            />
+                            <TimelineStep 
+                                step="2" 
+                                title="Under Review" 
+                                desc="Documentation is currently being verified against internal compliance standards." 
+                            />
+                            <TimelineStep 
+                                step="3" 
+                                title="Account Created" 
+                                desc="Technical setup of the beneficiary account is complete and awaiting final activation." 
+                            />
+                            <TimelineStep 
+                                step="4" 
+                                title="Transfer Initiated" 
+                                desc="Automatic transfer trigger once account reaches fully active status." 
+                            />
+                            <TimelineStep 
+                                step="5" 
+                                title="Completed" 
+                                desc="Final settlement of funds into the activated personal account." 
+                                isLast 
+                            />
+                        </div>
+                    </SectionCard>
+
+                    {/* Summary Note */}
+                    <div className="text-center px-6 py-8 border-t border-border/50">
+                        <p className="text-textSecondary text-sm leading-relaxed max-w-xl mx-auto">
+                            This page presents structured information regarding the account setup process and associated transfer timeline.
+                        </p>
                     </div>
+
+                    {/* Footer */}
+                    <footer className="text-center mt-12">
+                        <p className="text-textSecondary text-xs font-bold uppercase tracking-widest">AccountFlow Brief</p>
+                        <p className="text-textSecondary/40 text-[10px] mt-2">© 2026 Informational Document Scenario</p>
+                    </footer>
                 </div>
             );
         };
+
+        const App = () => (
+            <div className="min-h-screen">
+                <AccountFlowBrief />
+            </div>
+        );
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
