@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AccountFlow Brief</title>
+    <title>AccountFlow Kurzbericht</title>
     <!-- React and ReactDOM from CDN -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -79,8 +79,8 @@
                 <div className="max-w-[900px] mx-auto px-6 py-12 md:py-20 fade-in">
                     {/* Header */}
                     <header className="text-center mb-16">
-                        <h1 className="text-4xl md:text-5xl font-bold text-textPrimary tracking-tight mb-3">AccountFlow Brief</h1>
-                        <p className="text-textSecondary text-lg">Account Opening and Transfer Information</p>
+                        <h1 className="text-4xl md:text-5xl font-bold text-textPrimary tracking-tight mb-3">AccountFlow Kurzbericht</h1>
+                        <p className="text-textSecondary text-lg">Informationen zur Kontoeröffnung und Überweisung</p>
                         <div className="w-20 h-1 bg-accent mx-auto mt-8 rounded-full"></div>
                     </header>
 
@@ -93,75 +93,75 @@
                                 </svg>
                             </div>
                             <div>
-                                <h2 className="text-textPrimary text-base font-bold mb-2">Information Source</h2>
+                                <h2 className="text-textPrimary text-base font-bold mb-2">Informationsquelle</h2>
                                 <p className="text-textSecondary text-sm mb-4 leading-relaxed italic">
-                                    "This information has been provided by a banking relationship manager for briefing purposes."
+                                    "Diese Informationen wurden von einem Bank-Kundenbetreuer zu Informationszwecken bereitgestellt."
                                 </p>
                                 <div className="pt-4 border-t border-accent/10">
-                                    <p className="text-textSecondary text-xs uppercase font-bold tracking-widest mb-1">Source Name</p>
-                                    <p className="text-textPrimary text-lg font-medium">Mr. Peter Henkel</p>
+                                    <p className="text-textSecondary text-xs uppercase font-bold tracking-widest mb-1">Name der Quelle</p>
+                                    <p className="text-textPrimary text-lg font-medium">Herr Peter Henkel</p>
                                 </div>
                             </div>
                         </div>
                     </SectionCard>
 
                     {/* Account Information */}
-                    <SectionCard title="Account Opening Details">
+                    <SectionCard title="Details zur Kontoeröffnung">
                         <div className="space-y-1">
-                            <InfoRow label="Bank Name" value="Deutsche Kreditbank AG" />
-                            <InfoRow label="Account Type" value="Personal Account" />
-                            <InfoRow label="Status" value="Pending Activation" highlight />
+                            <InfoRow label="Bankname" value="Deutsche Kreditbank AG" />
+                            <InfoRow label="Kontotyp" value="Privatkonto" />
+                            <InfoRow label="Status" value="Aktivierung ausstehend" highlight />
                             <div className="mt-6 pt-4 border-t border-border/30">
                                 <p className="text-textSecondary text-xs leading-relaxed flex items-start gap-2">
                                     <span className="text-accent">•</span>
-                                    Account activation is subject to standard verification procedures.
+                                    Die Kontoaktivierung unterliegt den standardmäßigen Verifizierungsverfahren.
                                 </p>
                             </div>
                         </div>
                     </SectionCard>
 
                     {/* Transfer Information */}
-                    <SectionCard title="Transfer Details">
+                    <SectionCard title="Überweisungsdetails">
                         <div className="space-y-1">
-                            <InfoRow label="Amount" value="$270,000" highlight />
-                            <InfoRow label="Recipient" value="Sandra Brunner" />
-                            <InfoRow label="Status" value="Awaiting Account Activation" />
+                            <InfoRow label="Betrag" value="$270.000" highlight />
+                            <InfoRow label="Empfänger" value="Sandra Brunner" />
+                            <InfoRow label="Status" value="Wartet auf Kontoaktivierung" />
                             <div className="mt-6 pt-4 border-t border-border/30">
                                 <p className="text-textSecondary text-xs leading-relaxed flex items-start gap-2">
                                     <span className="text-accent">•</span>
-                                    The transfer is expected to proceed following successful account activation.
+                                    Die Überweisung wird voraussichtlich nach erfolgreicher Kontoaktivierung durchgeführt.
                                 </p>
                             </div>
                         </div>
                     </SectionCard>
 
                     {/* Process Timeline */}
-                    <SectionCard title="Process Timeline">
+                    <SectionCard title="Prozess-Zeitplan">
                         <div className="mt-4">
                             <TimelineStep 
                                 step="1" 
-                                title="Application Submitted" 
-                                desc="Initial instruction for account opening and transfer intent has been logged." 
+                                title="Antrag eingereicht" 
+                                desc="Die erste Anweisung zur Kontoeröffnung und Überweisungsabsicht wurde registriert." 
                             />
                             <TimelineStep 
                                 step="2" 
-                                title="Under Review" 
-                                desc="Documentation is currently being verified against internal compliance standards." 
+                                title="In Prüfung" 
+                                desc="Die Dokumentation wird derzeit auf interne Compliance-Standards geprüft." 
                             />
                             <TimelineStep 
                                 step="3" 
-                                title="Account Created" 
-                                desc="Technical setup of the beneficiary account is complete and awaiting final activation." 
+                                title="Konto erstellt" 
+                                desc="Die technische Einrichtung des Begünstigtenkontos ist abgeschlossen und wartet auf die finale Aktivierung." 
                             />
                             <TimelineStep 
                                 step="4" 
-                                title="Transfer Initiated" 
-                                desc="Automatic transfer trigger once account reaches fully active status." 
+                                title="Überweisung eingeleitet" 
+                                desc="Automatischer Überweisungsauslöser, sobald das Konto den Status 'vollständig aktiv' erreicht." 
                             />
                             <TimelineStep 
                                 step="5" 
-                                title="Completed" 
-                                desc="Final settlement of funds into the activated personal account." 
+                                title="Abgeschlossen" 
+                                desc="Endgültige Abrechnung der Gelder auf das aktivierte Privatkonto." 
                                 isLast 
                             />
                         </div>
@@ -170,14 +170,14 @@
                     {/* Summary Note */}
                     <div className="text-center px-6 py-8 border-t border-border/50">
                         <p className="text-textSecondary text-sm leading-relaxed max-w-xl mx-auto">
-                            This page presents structured information regarding the account setup process and associated transfer timeline.
+                            Diese Seite enthält strukturierte Informationen zum Prozess der Kontoeinrichtung und zum zugehörigen Zeitplan der Überweisung.
                         </p>
                     </div>
 
                     {/* Footer */}
                     <footer className="text-center mt-12">
-                        <p className="text-textSecondary text-xs font-bold uppercase tracking-widest">AccountFlow Brief</p>
-                        <p className="text-textSecondary/40 text-[10px] mt-2">© 2026 Informational Document Scenario</p>
+                        <p className="text-textSecondary text-xs font-bold uppercase tracking-widest">AccountFlow Kurzbericht</p>
+                        <p className="text-textSecondary/40 text-[10px] mt-2">© 2026 Informatives Dokumentations-Szenario</p>
                     </footer>
                 </div>
             );
